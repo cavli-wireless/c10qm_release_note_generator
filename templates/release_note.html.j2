@@ -1,0 +1,331 @@
+{#
+  release_note.html.j2 — styled HTML render, designed to be printed to PDF by
+  headless Chrome. This reproduces the visual format of the reference document
+  CQS290_RELEASE_NOTE_SDK_2.0.0.pdf, whose own metadata shows it was produced
+  exactly this way (Creator: HeadlessChrome, Producer: Skia/PDF, title
+  "render.html").
+
+  Everything below was measured out of that reference PDF rather than guessed:
+
+    palette (sampled from rendered pixels)
+      teal headings / rules  #0f766e     subtitle        #334155
+      body text              #24292f     table header    #f1f6f5
+      table borders          #cfd8d6     note callout    #f6f9f8
+      inline code fill       #eef4f3
+
+    type scale (read from the PDF's own /Tf operators, so these are exact)
+      h1 20pt · subtitle 15pt · h2 14pt · h3 12pt
+      body 10.5pt · table text 9pt · code 9.6pt body / 9.2pt in tables
+
+    rhythm (from line-box geometry)
+      body line pitch 12pt (line-height 1.15), paragraph gap +6pt,
+      list item pitch 14.25pt, table row pitch ~17pt
+
+    page: A4, 45px side margins, 36px top/bottom
+
+  Prose fields are passed through the `md` (block) and `mdi` (inline) filters,
+  so **bold**, `code`, [links](...), lists, nested markdown tables and `>` note
+  blockquotes all work inside any body/intro string.
+#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ title }}</title>
+<style>
+{{ font_face_css }}
+  @page {
+    size: A4;
+    margin: 45px;   /* 33.75pt — the reference's text block starts at x=33.75pt */
+  }
+
+  :root {
+    --teal:        #0f766e;
+    --subtitle:    #334155;
+    --ink:         #24292f;
+    --muted:       #57606a;
+    --rule:        #e5e7eb;
+    --table-head:  #f1f6f5;
+    --table-brd:   #cfd8d6;
+    --note-bg:     #f6f9f8;
+    --code-bg:     #eef4f3;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    /* Roboto is what the reference used. Where it isn't installed the stack
+       falls back to the closest metric-compatible faces; drop Roboto .woff2
+       files into templates/fonts/ to make output identical everywhere
+       (render_release_note.py embeds them automatically). */
+    font-family: Roboto, "Helvetica Neue", "Segoe UI", Arial, "Liberation Sans", sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.15;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code, kbd, samp, pre {
+    font-family: "DejaVu Sans Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  }
+
+  /* ---- headings ---------------------------------------------------- */
+
+  h1 {
+    font-size: 20pt;
+    font-weight: 700;
+    color: var(--teal);
+    margin: 0 0 7pt;
+    padding-bottom: 4pt;
+    border-bottom: 2px solid var(--teal);
+  }
+
+  /* the subtitle line directly under the title */
+  .subtitle {
+    font-size: 15pt;
+    font-weight: 700;
+    color: var(--subtitle);
+    margin: 0 0 8pt;
+  }
+
+  h2 {
+    font-size: 14pt;
+    font-weight: 700;
+    color: var(--teal);
+    margin: 0 0 11pt;
+    padding: 0;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    font-size: 12pt;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 13pt 0 5pt;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  h3 code {
+    font-size: 10pt;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  /* ---- blocks ------------------------------------------------------ */
+
+  p { margin: 0 0 6pt; }
+
+  ul, ol { margin: 0 0 6pt; padding-left: 17pt; }
+  li { margin: 0 0 2.25pt; }
+  li > ul, li > ol { margin-top: 2.25pt; }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: 12pt 0 16pt;
+  }
+
+  a { color: var(--teal); text-decoration: none; }
+
+  code {
+    background: var(--code-bg);
+    padding: 0.5pt 3pt;
+    border-radius: 3px;
+    font-size: 9.6pt;
+  }
+
+  .meta {
+    margin: 0 0 4pt;
+    line-height: 1.15;
+  }
+  .meta .label { font-weight: 700; }
+
+  .lead-in {
+    font-weight: 700;
+    margin: 12pt 0 6pt;
+  }
+
+  .no-changes {
+    margin: 0 0 6pt;
+  }
+
+  /* ---- tables ------------------------------------------------------ */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 10pt;
+    font-size: 9pt;
+    break-inside: auto;
+  }
+
+  thead { display: table-header-group; }   /* repeat header across page breaks */
+  tr { break-inside: avoid; page-break-inside: avoid; }
+
+  th {
+    background: var(--table-head);
+    font-weight: 700;
+    text-align: left;
+    color: var(--ink);
+  }
+
+  th, td {
+    border: 1px solid var(--table-brd);
+    padding: 3.75pt 7pt;
+    vertical-align: top;
+  }
+
+  td code, th code { background: var(--code-bg); font-size: 9.2pt; }
+
+  /* per-column alignment, from the input table's separator row
+     (:--- left, ---: right, :---: center) */
+  .ta-left   { text-align: left; }
+  .ta-right  { text-align: right; }
+  .ta-center { text-align: center; }
+
+  /* Tables wider than a few columns need to breathe: let long cells wrap
+     rather than forcing the table past the page margin. */
+  table { table-layout: auto; word-break: normal; overflow-wrap: anywhere; }
+
+  /* ---- note callout (markdown "> ..." blockquote) ------------------ */
+
+  blockquote {
+    margin: 0 0 10pt;
+    padding: 7pt 10pt;
+    background: var(--note-bg);
+    border-left: 3px solid var(--teal);
+    font-size: 9pt;
+  }
+  blockquote p:last-child { margin-bottom: 0; }
+
+  /* ---- print behaviour --------------------------------------------- */
+
+  h2, h3 { break-after: avoid; }
+  section { break-inside: auto; }
+</style>
+</head>
+<body>
+
+<h1>{{ title }}</h1>
+{% if subtitle %}
+<div class="subtitle">{{ subtitle | mdi }}</div>
+{% endif %}
+
+<div class="meta">
+{% for m in meta %}
+  <span class="label">{{ m.label }}:</span> {{ m.value | mdi }}<br>
+{% endfor %}
+</div>
+
+<hr>
+
+<h2>1. Overview</h2>
+
+{{ overview.intro | md }}
+
+{% if overview.architecture_changes %}
+<p>Major architectural changes:</p>
+<ul>
+{% for item in overview.architecture_changes %}
+  <li>{{ item | mdi }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if overview.domains %}
+<p>This release's changes are organized into two domains:</p>
+<ul>
+{% for item in overview.domains %}
+  <li>{{ item | mdi }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if overview.appendix_note %}
+{{ overview.appendix_note | md }}
+{% endif %}
+
+<hr>
+
+{% macro render_part(part, default_headers) %}
+<h2>{{ part.heading }}</h2>
+
+{{ part.intro | md }}
+
+{% if part.peripherals_table %}
+<p class="lead-in">{{ part.peripherals_table.label or 'Supported peripherals:' }}</p>
+{{ part.peripherals_table | html_table }}
+{% endif %}
+
+{# Two independent decisions, deliberately NOT an if/else:
+
+     - the statement renders when nothing in this Part changed;
+     - the table renders when it has rows.
+
+   Normally exactly one of them appears. But the table can still carry rows in a
+   Part with no changes — PATH NOT FOUND and NESTED REPO rows, and every row
+   under --keep-unchanged — and those must never be hidden by the statement. An
+   if/else would swallow exactly the rows that most need to be seen. #}
+{% if part.no_changes %}
+<p class="no-changes"><strong>No changes on this release.</strong></p>
+{% endif %}
+{% if part.change_table and part.change_table.rows %}
+{% set ct = part.change_table | ensure_rows(default_headers) %}
+<p class="lead-in">{{ part.change_table.label or 'Change set (commits):' }}</p>
+{{ ct | html_table }}
+{% endif %}
+
+{% for sub in part.subsections %}
+<h3>{{ sub.heading }}{{ (' <code>' + sub.commit_refs | join('</code> <code>') + '</code>') if sub.commit_refs else '' }}</h3>
+{{ sub.body | join('\n') | md }}
+{% endfor %}
+{% endmacro %}
+
+{{ render_part(part_a, ['Commit', 'Area', 'Change']) }}
+
+<hr>
+
+{{ render_part(part_b, ['Commit', 'Image', 'Change']) }}
+
+<hr>
+
+<h2>{{ test_results.heading }}</h2>
+
+{{ test_results.intro | md }}
+
+{% for t in test_results.tables %}
+<h3>{{ t.heading }}</h3>
+{{ t | html_table }}
+{% endfor %}
+
+<hr>
+
+<h2>{{ known_issues.heading }}</h2>
+
+<ul>
+{% for item in known_issues.points %}
+  <li>{{ item | mdi }}</li>
+{% endfor %}
+</ul>
+
+{% if appendix %}
+<hr>
+
+<h2>{{ appendix.heading }}</h2>
+
+{{ appendix.intro | md }}
+
+{{ appendix.table | html_table }}
+
+{% if appendix.footer_notes %}
+{% for note in appendix.footer_notes %}
+<blockquote>{{ note | mdi }}</blockquote>
+{% endfor %}
+{% endif %}
+{% endif %}
+
+</body>
+</html>

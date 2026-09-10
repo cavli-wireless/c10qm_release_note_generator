@@ -1,0 +1,51 @@
+# versions.yaml — the only YAML you edit. Everything else in this folder is
+# Markdown. These values appear in the document header.
+#
+# Pre-filled where the repo already told us the answer; REPLACE_ME where only
+# you know. Anything left as REPLACE_ME is counted at the end of every run, so
+# an unfinished note cannot ship unnoticed.
+#
+# Any scalar field here can be referenced from another as {field_name}, so a
+# version number is written once and reused. `title` and `subtitle` below use
+# {sdk_version} and {modem_version}. An unknown name is left as-is rather than
+# blanked, so a typo shows up in the document instead of vanishing.
+
+title: "Release Note C10QM SDK {sdk_version}"
+subtitle: "Cavli C10QM / MDM9607, Linux 6.1"
+
+sdk_version: "3.2.10"
+
+# Verified from the repo: modem_proc was last touched by bf1c9311c (2026-05-28)
+# "Update modem version to 1.1.3". Change this if the release ships a different
+# modem build.
+modem_version: "3.2.5"
+
+platform: "Qualcomm MDM9607 (Cavli C10QM module), Linux 6.1 / Yocto"
+
+# Extra header rows. Repositories / From / To / Scope are added automatically
+# from the repos — do not list them here.
+extra_meta:
+  - {label: "Release type", value: "Official Release"}
+
+# Section 1 opening paragraph. Say what the release is FOR — the tables already
+# say what is in it.
+overview: >-
+  This release introduces new AT Command & SDK API for MBN loading, CME error code reporting, URC configuration and fix known issues.
+
+domains:
+  - "**Part A — Linux SDK & Services:** AT command interface, Yocto layers, kernel, OTA, build. See Section 2."
+  - "**Part B — Chipcode (Firmware):** MPSS, BOOT, RPM, TrustZone, BTFM, CNSS. See Section 3."
+
+part_a_heading: "2. Part A — Linux SDK & Services"
+part_a_intro: >-
+  Userspace, SDK and build changes for the C10QM Linux 4.14 line. The table
+  below lists every configured subsystem; those with no commits in this release
+  are shown with the commit they currently sit at.
+part_a_change_label: "Linux SDK / services change set (Cavli commits):"
+
+part_b_heading: "3. Part B — Chipcode (Firmware): Modem, Boot, RPM, TrustZone, BTFM, CNSS"
+part_b_intro: >-
+  Firmware images. Each is listed with the commit that last modified it, so the
+  table doubles as a firmware snapshot even when nothing changed.
+part_b_change_label: "Chipcode change set (Cavli commits):"
+

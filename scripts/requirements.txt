@@ -1,0 +1,24 @@
+# Dependencies for the release-note pipeline.
+#
+# Check what's actually missing on your machine (and get the right install
+# command for it) with:
+#     python3 scripts/check_deps.py
+#
+# On Ubuntu / Debian / WSL, `pip install` refuses with
+# "externally-managed-environment" (PEP 668). Use system packages instead:
+#     sudo apt install -y python3-yaml python3-jinja2 python3-markdown
+# or a virtualenv:
+#     python3 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt
+#     PYTHON=.venv/bin/python ./scripts/generate.sh ...
+# or override:
+#     pip3 install --break-system-packages -r scripts/requirements.txt
+
+PyYAML>=6.0        # repos.yaml / release_note.yaml            (apt: python3-yaml)
+Jinja2>=3.1        # document templating                        (apt: python3-jinja2)
+Markdown>=3.4      # markdown -> HTML for styled HTML/PDF output (apt: python3-markdown)
+requests>=2.28     # only for the GitHub-API fetch path         (apt: python3-requests)
+
+# Not pip-installable, needed for some outputs:
+#   git                 -> fetch_local.py (reading local clones)
+#   Chrome or Chromium  -> --out-pdf, the format matching the reference doc
+#   pandoc              -> --out-docx (optional; Word output only)

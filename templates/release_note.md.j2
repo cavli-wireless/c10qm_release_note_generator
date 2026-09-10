@@ -1,0 +1,118 @@
+{# release_note.md.j2 — mirrors the structure of CQS290_RELEASE_NOTE_SDK_2.0.0
+   Table rendering is done by the `md_table` Python filter (registered in
+   render_release_note.py) rather than Jinja loops, to avoid whitespace/newline
+   fights between the header separator and the first data row. #}
+# {{ title }}
+
+{% if subtitle %}## {{ subtitle }}
+
+{% endif -%}
+{% for m in meta %}
+**{{ m.label }}:** {{ m.value }}\
+{% endfor %}
+
+---
+
+## 1. Overview
+
+{{ overview.intro }}
+
+{% if overview.architecture_changes %}
+Major architectural changes:
+
+{% for item in overview.architecture_changes %}
+- {{ item }}
+{% endfor %}
+
+{% endif %}
+{% if overview.domains %}
+This release's changes are organized into two domains:
+
+{% for item in overview.domains %}
+- {{ item }}
+{% endfor %}
+
+{% endif %}
+{% if overview.appendix_note %}
+{{ overview.appendix_note }}
+{% endif %}
+
+---
+
+{% macro render_part(part, default_headers) %}
+## {{ part.heading }}
+
+{{ part.intro }}
+
+{% if part.peripherals_table %}
+**{{ part.peripherals_table.label or 'Supported peripherals:' }}**
+
+{{ part.peripherals_table | md_table }}
+
+{% endif %}
+{% if part.no_changes %}
+**No changes on this release.**
+
+{% endif %}
+{# Not an else: a no-change Part can still carry PATH NOT FOUND / NESTED REPO
+   rows (and every row under --keep-unchanged), which must not be hidden. #}
+{% if part.change_table and part.change_table.rows %}
+{% set ct = part.change_table | ensure_rows(default_headers) %}
+**{{ part.change_table.label or 'Change set (commits):' }}**
+
+{{ ct | md_table }}
+
+{% endif %}
+
+{% for sub in part.subsections %}
+
+### {{ sub.heading }}{{ (' `' + sub.commit_refs | join('` `') + '`') if sub.commit_refs else '' }}
+
+{% for line in sub.body %}
+{{ line }}
+{% endfor %}
+{% endfor %}
+{% endmacro %}
+
+{{ render_part(part_a, ['Commit', 'Area', 'Change']) }}
+
+---
+
+{{ render_part(part_b, ['Commit', 'Image', 'Change']) }}
+
+---
+
+## {{ test_results.heading }}
+
+{{ test_results.intro }}
+
+{% for t in test_results.tables %}
+
+### {{ t.heading }}
+
+{{ t | md_table }}
+{% endfor %}
+
+---
+
+## {{ known_issues.heading }}
+
+{% for item in known_issues.points %}
+- {{ item }}
+{% endfor %}
+
+{% if appendix %}
+---
+
+## {{ appendix.heading }}
+
+{{ appendix.intro }}
+
+{{ appendix.table | md_table }}
+
+{% if appendix.footer_notes %}
+{% for note in appendix.footer_notes %}
+> {{ note }}
+{% endfor %}
+{% endif %}
+{% endif %}

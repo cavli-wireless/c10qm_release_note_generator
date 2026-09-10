@@ -1,0 +1,90 @@
+# AQ20 release note — PROSE template.
+#
+# This holds only what a human has to write. Everything derivable from the
+# repos — the Part A/B change tables, the From/To metadata, the Appendix
+# commit-range table — is injected by assemble_note.py on every run.
+#
+# @AUTO_*@ tokens are substituted automatically:
+#   @AUTO_FROM@  @AUTO_TO@  @AUTO_SCOPE@  @AUTO_REPO@
+#   @AUTO_DATE@  @AUTO_COMMITS@  @AUTO_REPOLIST@
+#
+# This file is read ONLY on the first run. After that, out/release_note.yaml
+# becomes the source, so prose you write there survives regeneration.
+
+title: "Release Note C10QM SDK REPLACE_ME"
+subtitle: "Cavli C10QM / MDM9607, Linux 4.14"
+
+meta:
+  - label: "SDK version"
+    value: "REPLACE_ME"
+  - label: "Modem version"
+    value: "REPLACE_ME"
+  - label: "Platform"
+    value: "Cavli AQ20 module (Qualcomm MDM9607), Linux 4.14 / Yocto"
+  - label: "From"
+    value: "@AUTO_FROM@"
+  - label: "To"
+    value: "@AUTO_TO@ (@AUTO_DATE@)"
+
+overview:
+  intro: >-
+    This release covers from @AUTO_FROM@ to @AUTO_TO@.
+  architecture_changes:
+    - "REPLACE_ME — one bullet per structural change (baseline bump, kernel move, component added or dropped). Delete this list if there are none."
+  domains:
+    - "**Part A — Linux SDK & Services:** AT command interface (`apps_proc/cavli` = cavli_linux_services), Yocto layers, kernel, OTA, build. See Section 2."
+    - "**Part B — Chipcode (Firmware):** MPSS, BOOT, RPM, TrustZone, BTFM, CNSS. See Section 3."
+  appendix_note: "The exact commit range per repository is in **Appendix A**."
+
+part_a:
+  heading: "2. Part A — Linux SDK & Services"
+  intro: >-
+    Userspace, SDK and build changes for the AQ20 Linux 3.18 line. The table
+    below lists every configured subsystem; those with no commits in this
+    release are shown with the commit they currently sit at.
+  change_table:
+    # Rows are GENERATED. Only this label is kept.
+    label: "Linux SDK change set (Cavli commits):"
+  subsections:
+    # Write one entry per THEME, not per commit. Group related commits and
+    # explain what changed and why. Delete the stub once real ones exist.
+    - heading: "2.1 REPLACE_ME"
+      commit_refs: []
+      body:
+        - "REPLACE_ME — what changed, why, and what it means for a customer integrating the SDK."
+
+part_b:
+  heading: "3. Part B — Chipcode (Firmware): Modem, Boot, RPM, TrustZone, BTFM, CNSS"
+  intro: >-
+    Firmware images. Each is listed with the commit that last modified it, so
+    the table doubles as a firmware snapshot even when nothing changed.
+  change_table:
+    label: "Chipcode change set (Cavli commits):"
+  subsections: []
+
+test_results:
+  heading: "4. Test Result"
+  intro: >-
+    REPLACE_ME — state plainly which hardware these results came from (Cavli EVK
+    vs a Qualcomm reference board) and who ran them. Do not paste results you
+    have not seen.
+  tables:
+    - heading: "4.1 Functional Test Cases"
+      headers: ["Test Case", "Result"]
+      rows:
+        - ["REPLACE_ME", "REPLACE_ME"]
+
+known_issues:
+  heading: "5. Known Issues"
+  points:
+    - "REPLACE_ME — known defects, plus anything in this document that is inferred rather than verified."
+
+appendix:
+  heading: "Appendix A — Commit Range"
+  intro: >-
+    The exact range each repository contributes to this release. Derived from
+    the resolved refs; for the vendored `cavli_linux_services` the range comes
+    from AQ20's own submodule pointer.
+  # table is GENERATED
+  footer_notes:
+    - "Per-subsystem commit snapshot is in `out/snapshot.md`."

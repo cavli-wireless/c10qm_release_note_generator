@@ -1,0 +1,84 @@
+# AQ20 release note — repo list.
+#
+# AQ20 is a single repo holding the whole MDM9607 Linux Embedded BSP
+# (apps_proc/, modem_proc/, boot_images/, rpm_proc/, common/, build/), so
+# there is one entry here rather than one per subsystem. The Part A / Part B
+# split happens across directories instead — see area_rules.yaml in this
+# folder.
+#
+# Baseline chosen: origin/main -> hotfix/failed_to_build_diag.
+# That scopes this release note to the diag build-failure hotfix (~2 commits).
+#
+# If you actually meant to cover a full release cycle instead, change from_ref
+# to one of these release-marker commits (counts are commits-to-HEAD as of
+# 2026-07-16):
+#
+#     7604bfe62   2025-12-11   Update release checkpoint v1_2_4    (~45 commits)
+#     930057fb5   2026-03-04   Update version 1.1.2 for modem      (~24 commits)
+#     bf1c9311c   2026-05-28   Update modem version to 1.1.3       (~12 commits)
+#
+# Note: origin/master is NOT the mainline in this repo — it stopped moving on
+# 2025-03-25. origin/main is the live branch. Don't use master as a baseline.
+
+product: AQ20
+release_version: "1.2.10"
+
+repos:
+  - name: AQ20
+    repo: cavli-wireless/AQ20
+    local_path: /home/thodo/workspace/aq20_linux_318
+    from_ref: 1.2.9
+    to_ref: 1.2.10
+    part: mixed          # single repo spanning both Part A and Part B
+
+    # Subsystem snapshot. Every path listed here gets pinned to a commit ID in
+    # out/snapshot.md — including subsystems with no commits in this release,
+    # which is what lets the release note state "no change" AND cite the commit
+    # the image sits at. Add or trim to match how your release note is divided.
+    # `part` decides which table each subsystem lands in: A = Section 2,
+    # B = Section 3. build_parts.py generates both tables from this list, so
+    # every subsystem here appears in the document whether or not it changed.
+    #
+    # Verify these paths against the repo before trusting the output:
+    #   python3 scripts/fetch_local.py --list-subsystems ~/workspace/aq20_linux_318
+    # Anything that matches nothing is flagged PATH NOT FOUND rather than
+    # silently rendering as "no change".
+    # Verified against the repo on 2026-08-21 via
+    #   fetch_local.py --list-subsystems ~/workspace/aq20_linux_318
+    # The tree has exactly 10 top-level directories; all paths below are real.
+    #
+    # apps_proc is split into its sub-trees for a readable Area column.
+    # Attribution is longest-path-wins, so a file in apps_proc/kernel lands on
+    # that entry and only anything else under apps_proc falls to the catch-all.
+    subsystems:
+      # ---- Part A — Linux SDK / apps side ----
+      # Cavli's own userspace tree. Listed FIRST because it is the headline
+      # subsystem for customers: it carries the vendor AT command interface.
+      # Longest-path-wins means its commits are attributed here and never fall
+      # through to the "apps_proc — other" catch-all below.
+      - {name: "apps_proc — kernel",           path: "apps_proc/kernel",   part: A}
+      - {name: "apps_proc — yocto",            path: "apps_proc/poky",     part: A}
+      - {name: "apps_proc — ota",              path: "apps_proc/OTA",      part: A}
+      - {name: "apps_proc — external",         path: "apps_proc/external", part: A}
+      - {name: "apps_proc — vendor",           path: "apps_proc/vendor",   part: A}
+      - {name: "apps_proc — bootable",         path: "apps_proc/bootable", part: A}
+      - {name: "apps_proc — other",            path: "apps_proc",          part: A}
+      - {name: "Build system",                 path: "build",              part: A}
+      - {name: "Common — Cavli tooling",       path: "common",             part: A}
+      - {name: "CI / automation",              path: ".github",            part: A}
+      # ---- Part B — chipcode / firmware ----
+      # Last-touched commits as of HEAD ec1eabfac (2026-07-16), for reference:
+      #   modem_proc       bf1c9311c  2026-05-28  Update modem version to 1.1.3
+      #   common/sectools  (under common, 8c760d9b0 2025-08-26)
+      #   rpm_proc         c6e3a82e1  2024-12-03  all pyc files removed
+      #   trustzone_images c6e3a82e1  2024-12-03  all pyc files removed
+      #   boot_images      6d29dedb4  2024-04-10  Init LE.UM.2.3.6-55700-9x07
+      #   btfm_proc        6d29dedb4  2024-04-10  Init LE.UM.2.3.6-55700-9x07
+      #   cnss_proc        6d29dedb4  2024-04-10  Init LE.UM.2.3.6-55700-9x07
+      - {name: "MPSS (modem_proc)",            path: "modem_proc",         part: B}
+      - {name: "BOOT (boot_images)",           path: "boot_images",        part: B}
+      - {name: "RPM (rpm_proc)",               path: "rpm_proc",           part: B}
+      - {name: "TrustZone (trustzone_images)", path: "trustzone_images",   part: B}
+      - {name: "BTFM (btfm_proc)",             path: "btfm_proc",          part: B}
+      - {name: "CNSS / WLAN (cnss_proc)",      path: "cnss_proc",          part: B}
+      - {name: "Sectools / signing",           path: "common/sectools",    part: B}

@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Release Note SDK 2.0.0 & Modem 2.0.0</title>
+<style>
+
+  @page {
+    size: A4;
+    margin: 45px;   /* 33.75pt — the reference's text block starts at x=33.75pt */
+  }
+
+  :root {
+    --teal:        #0f766e;
+    --subtitle:    #334155;
+    --ink:         #24292f;
+    --muted:       #57606a;
+    --rule:        #e5e7eb;
+    --table-head:  #f1f6f5;
+    --table-brd:   #cfd8d6;
+    --note-bg:     #f6f9f8;
+    --code-bg:     #eef4f3;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    /* Roboto is what the reference used. Where it isn't installed the stack
+       falls back to the closest metric-compatible faces; drop Roboto .woff2
+       files into templates/fonts/ to make output identical everywhere
+       (render_release_note.py embeds them automatically). */
+    font-family: Roboto, "Helvetica Neue", "Segoe UI", Arial, "Liberation Sans", sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.15;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code, kbd, samp, pre {
+    font-family: "DejaVu Sans Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  }
+
+  /* ---- headings ---------------------------------------------------- */
+
+  h1 {
+    font-size: 20pt;
+    font-weight: 700;
+    color: var(--teal);
+    margin: 0 0 7pt;
+    padding-bottom: 4pt;
+    border-bottom: 2px solid var(--teal);
+  }
+
+  /* the subtitle line directly under the title */
+  .subtitle {
+    font-size: 15pt;
+    font-weight: 700;
+    color: var(--subtitle);
+    margin: 0 0 8pt;
+  }
+
+  h2 {
+    font-size: 14pt;
+    font-weight: 700;
+    color: var(--teal);
+    margin: 0 0 11pt;
+    padding: 0;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    font-size: 12pt;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 13pt 0 5pt;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  h3 code {
+    font-size: 10pt;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  /* ---- blocks ------------------------------------------------------ */
+
+  p { margin: 0 0 6pt; }
+
+  ul, ol { margin: 0 0 6pt; padding-left: 17pt; }
+  li { margin: 0 0 2.25pt; }
+  li > ul, li > ol { margin-top: 2.25pt; }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: 12pt 0 16pt;
+  }
+
+  a { color: var(--teal); text-decoration: none; }
+
+  code {
+    background: var(--code-bg);
+    padding: 0.5pt 3pt;
+    border-radius: 3px;
+    font-size: 9.6pt;
+  }
+
+  .meta {
+    margin: 0 0 4pt;
+    line-height: 1.15;
+  }
+  .meta .label { font-weight: 700; }
+
+  .lead-in {
+    font-weight: 700;
+    margin: 12pt 0 6pt;
+  }
+
+  /* ---- tables ------------------------------------------------------ */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 10pt;
+    font-size: 9pt;
+    break-inside: auto;
+  }
+
+  thead { display: table-header-group; }   /* repeat header across page breaks */
+  tr { break-inside: avoid; page-break-inside: avoid; }
+
+  th {
+    background: var(--table-head);
+    font-weight: 700;
+    text-align: left;
+    color: var(--ink);
+  }
+
+  th, td {
+    border: 1px solid var(--table-brd);
+    padding: 3.75pt 7pt;
+    vertical-align: top;
+  }
+
+  td code, th code { background: var(--code-bg); font-size: 9.2pt; }
+
+  /* ---- note callout (markdown "> ..." blockquote) ------------------ */
+
+  blockquote {
+    margin: 0 0 10pt;
+    padding: 7pt 10pt;
+    background: var(--note-bg);
+    border-left: 3px solid var(--teal);
+    font-size: 9pt;
+  }
+  blockquote p:last-child { margin-bottom: 0; }
+
+  /* ---- print behaviour --------------------------------------------- */
+
+  h2, h3 { break-after: avoid; }
+  section { break-inside: auto; }
+</style>
+</head>
+<body>
+
+<h1>Release Note SDK 2.0.0 & Modem 2.0.0</h1>
+<div class="subtitle">Big Upgrade: LA 4.0 → LA 5.0 (Cavli CQS290 / QCM2290 IoT)</div>
+
+<div class="meta">
+  <span class="label">Cavli SDK Release:</span> 2.0.0 — based on Qualcomm QCM2290.LA.5.0<br>
+  <span class="label">Modem version:</span> 2.0.0 (MPSS.HA.1.1-00549)<br>
+  <span class="label">Platform:</span> Qualcomm QCM2290 (Cavli CQS290 module)<br>
+  <span class="label">From:</span> <code>Snapdragon_Mid_2020_IOT.SPF.4.0</code> — QCM2290.LA.4.0 (RNO-240710023155, 10-Jul-2024)<br>
+  <span class="label">To:</span> <code>IOT_High_Mid_2024.SPF.1.0</code> — QCM2290.LA.5.0 (RNO-260220023709, 20-Feb-2026)<br>
+  <span class="label">Android:</span> 14 (U) — Linux kernel: 4.19 → 5.15 (GKI, Kernel Platform 2.0)<br>
+</div>
+
+<hr>
+
+<h2>1. Overview</h2>
+
+<p>This is a <strong>big upgrade</strong> from the <code>Snapdragon_Mid_2020_IOT.SPF.4.0</code> program (internally QCM2290.LA.<strong>4.0</strong>) to the <code>IOT_High_Mid_2024.SPF.1.0</code> program (internally QCM2290.LA.<strong>5.0</strong>).</p>
+
+<p>Major architectural changes:</p>
+<ul>
+  <li><strong>Kernel:</strong> moved from the legacy <code>LA.UM.9.15.2</code> kernel (Linux 4.19) to <strong>Kernel Platform 2.0</strong> <code>KERNEL.PLATFORM.2.0.r12</code> (Linux 5.15 GKI) — kernel/vendor split following the GKI model.</li>
+  <li><strong>HLOS System:</strong> <code>LA.QSSI.14.0.r1</code> → <code>LA.QSSI.14.0.r3</code>; Android 11 branch (<code>LA.QSSI.11.0</code>) dropped.</li>
+  <li><strong>HLOS Vendor:</strong> <code>LA.UM.9.15.2</code> → <code>LA.VENDOR.13.2.1.r2</code> (Divar vendor line), with new <code>LA.QISI.13.0.r1</code>.</li>
+  <li><strong>ADSP:</strong> major bump <code>ADSP.VT.5.4.1</code> → <code>ADSP.VT.5.4.3.c1</code> (Divar).</li>
+  <li>Synchronized updates to MPSS, TZ, BOOT, BTFM, WLAN, RPM.</li>
+</ul>
+
+<p>This release's changes are organized into two domains:</p>
+<ul>
+  <li><strong>Part A — Android SDK (HLOS):</strong> peripherals, functions, features, EDK2 bootloader, kernel drivers, frameworks, vendor apps. See Section 2.</li>
+  <li><strong>Part B — Chipcode (Firmware):</strong> MPSS (modem), BOOT, TZ, RPM, ADSP and their build tooling. See Section 3.</li>
+</ul>
+
+<p>The full LA 4.0 → LA 5.0 Build ID comparison table is in <strong>Appendix A</strong>.</p>
+
+<hr>
+
+
+<h2>2. Part A — Android SDK (HLOS): Peripherals, Functions & Features</h2>
+
+<p>Peripheral bring-up and feature enablement on the Android/HLOS side (bengal + qssi source trees).</p>
+
+<p class="lead-in">Supported peripherals (CQS290 EVK):</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Display</td>
+<td>MIPI DSI 1280x800 LCD</td>
+</tr>
+<tr>
+<td>Input / Touch</td>
+<td>Goodix GT911 capacitive touch (I2C)</td>
+</tr>
+<tr>
+<td>Audio</td>
+<td>3.5 mm headphone jack</td>
+</tr>
+<tr>
+<td>Multimedia / Camera</td>
+<td>2x Sony IMX258 CSI camera (PDAF)</td>
+</tr>
+<tr>
+<td>Connectivity</td>
+<td>WLAN 1x1 802.11a/b/g/n/ac, Bluetooth 5.0, GNSS</td>
+</tr>
+</tbody>
+</table>
+
+<p class="lead-in">Android SDK change set (Cavli commits):</p>
+<table>
+<thead>
+<tr>
+<th>Commit</th>
+<th>Area</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>429e15c</code></td>
+<td>vendor / camera</td>
+<td>Add IMX258 PDAF to CHI-SDK</td>
+</tr>
+<tr>
+<td><code>6606492</code></td>
+<td>msm-kernel / power</td>
+<td>Charger driver: skip battery checks (battery-less module)</td>
+</tr>
+<tr>
+<td><code>bb9d61f</code></td>
+<td>proprietary / storage</td>
+<td>Disable HS400 Enhanced Strobe on new HW rev (fall back to HS400)</td>
+</tr>
+<tr>
+<td><code>8887e23</code></td>
+<td>proprietary / power</td>
+<td>Remove PSY_IIO (battery-less config)</td>
+</tr>
+<tr>
+<td><code>0a524a1</code></td>
+<td>vendor/cavli / OTA</td>
+<td>Automotive support + OTA file:// / content:// URI handling</td>
+</tr>
+<tr>
+<td><code>a369820</code></td>
+<td>device/qcom</td>
+<td>Change product model name</td>
+</tr>
+<tr>
+<td><code>4ef3e4b</code></td>
+<td>qssi/device/qcom</td>
+<td>Change product model name (system)</td>
+</tr>
+<tr>
+<td><code>fb32dfc</code></td>
+<td>edk2</td>
+<td>EDK2 bootloader aligned to Kernel Platform 2.0</td>
+</tr>
+<tr>
+<td><code>3bc828b</code></td>
+<td>vendor/cavli/build-tools</td>
+<td>Enable job build configuration</td>
+</tr>
+<tr>
+<td><code>ced2ca2</code></td>
+<td>vendor/cavli/setup</td>
+<td>Suppress change-log output during compile</td>
+</tr>
+<tr>
+<td><code>c8d4a62</code></td>
+<td>qssi/device/qcom</td>
+<td>HLOS baseline sync — LA.QSSI.14.0.R3</td>
+</tr>
+<tr>
+<td><code>5688606</code></td>
+<td>qssi/frameworks</td>
+<td>HLOS baseline sync — LA.QSSI.14.0.R3</td>
+</tr>
+<tr>
+<td><code>1771cc0</code></td>
+<td>qssi/vendor</td>
+<td>HLOS baseline sync — LA.QSSI.14.0.R3</td>
+</tr>
+<tr>
+<td><code>e7e29b0</code></td>
+<td>bengal/device/qcom</td>
+<td>Vendor baseline sync — LA.VENDOR r1_000020.1</td>
+</tr>
+</tbody>
+</table>
+
+<h3>2.1 Display / Touch / Audio</h3>
+<ul>
+<li><strong>Display:</strong> MIPI DSI 1280x800 LCD panel brought up to Android UI.</li>
+<li><strong>Touch:</strong> Goodix GT911 capacitive touch controller over I2C.</li>
+<li><strong>Audio:</strong> 3.5 mm headphone jack playback/record path.</li>
+</ul>
+<h3>2.2 Camera — IMX258 PDAF <code>429e15c</code></h3>
+<p>Brought up 2x Sony IMX258 CSI image sensors with PDAF (Phase Detection Auto Focus) support, integrated into the Qualcomm CHI-SDK camera stack.</p>
+<h3>2.3 Storage — eMMC HS400 tuning <code>bb9d61f</code></h3>
+<p>On the new HW revision, HS400 Enhanced Strobe fails the bus-width switch at 200 MHz (CMD6 returns -EILSEQ / -84 during devfreq scale-up), flooding CQHCI error dumps and triggering a watchdog reset. The interface now disables HS400ES and falls back to plain HS400 (CMD21 tuning), giving enough timing on the affected silicon.</p>
+<h3>2.4 Power — Battery-less operation <code>6606492</code> <code>8887e23</code></h3>
+<p>The CQS290 module has no external Qualcomm SMB charger IC and no battery. The charger driver now skips battery current / presence / status checks (debug-battery mode) to prevent false errors, and PSY_IIO is removed from the kernel config for the battery-less configuration.</p>
+<h3>2.5 OTA Update & Applications <code>0a524a1</code></h3>
+<ul>
+<li><strong>Local OTA update application (SystemUpdater):</strong></li>
+<li>Detects the automotive platform and uses /data/local/tmp as the default update path.</li>
+<li>Separates file:// and content:// URI handling with proper permission management, plus a File-API based discovery path for file:// sources.</li>
+<li>Bundled utility / validation applications: GPS Test, Open Camera, Organic Maps, and the ATI app.</li>
+</ul>
+<h3>2.6 Product Identity <code>a369820</code> <code>4ef3e4b</code></h3>
+<p>Product model name presented to the OS updated to Android IOT (vendor + system device configs).</p>
+<h3>2.7 Bootloader (EDK2) <code>fb32dfc</code></h3>
+<p>Bootloader (EDK2) aligned to the new Kernel Platform 2.0 (KERNEL.PLATFORM.2.0.R12).</p>
+<h3>2.8 Build / Setup Tooling & HLOS Baseline <code>3bc828b</code> <code>ced2ca2</code> <code>c8d4a62</code> <code>5688606</code> <code>1771cc0</code> <code>e7e29b0</code></h3>
+<p>Vendor build-tools enabled for job builds; setup suppresses change-log output during compile.
+HLOS baseline sync to LA.QSSI.14.0.r3 (system device/frameworks/vendor) and the LA.VENDOR.13.2.1.r2 vendor line.</p>
+
+
+<hr>
+
+<h2>3. Part B — Chipcode (Firmware): Modem, Boot, TZ, RPM, ADSP</h2>
+
+<p>Low-level firmware bring-up and customizations in the chipcode/ tree.</p>
+
+
+<p class="lead-in">Chipcode change set (Cavli commits):</p>
+<table>
+<thead>
+<tr>
+<th>Commit</th>
+<th>Image</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>533743e</code></td>
+<td>MPSS.HA.1.1 (Modem)</td>
+<td>ATCoP: Cavli vendor extensions + ATI / +RFI commands, EFS identity</td>
+</tr>
+<tr>
+<td><code>dcc4e79</code></td>
+<td>BOOT.XF.4.1</td>
+<td>Enable PM_LDO_17 for RF antenna path</td>
+</tr>
+<tr>
+<td><code>71151f6</code></td>
+<td>build-tools</td>
+<td>Build scripts + configuration for IoT LA 5.0</td>
+</tr>
+<tr>
+<td><code>d335cd1</code></td>
+<td>ADSP.VT.5.4.3.c1</td>
+<td>Baseline sync — iot_high_mid_2024_spf_1_0 r1.0_00020.1</td>
+</tr>
+<tr>
+<td><code>dd6c512</code></td>
+<td>RPM.BF.1.10</td>
+<td>Baseline sync — iot_high_mid_2024_spf_1_0 r1.0_00020.1</td>
+</tr>
+<tr>
+<td><code>34db77f</code></td>
+<td>chipcode (top)</td>
+<td>Baseline sync — iot_high_mid_2024_spf_1_0 r1.0_00020.1</td>
+</tr>
+</tbody>
+</table>
+
+<h3>3.1 Modem (MPSS) — Vendor AT Command Interface <code>533743e</code></h3>
+<ul>
+<li><strong>Cavli vendor AT command set</strong> for device identification and RF information, under interface/atcop/cavli/:</li>
+<li>ATI overridden to report the full module identity: manufacturer, model, description, IMEI / SVN, part number, serial number, hardware version, modem version, and build date.</li>
+<li>New +RFI command reports the RFC version and QCN version.</li>
+<li>Device identity (HW/SW version, part number, serial number, QCN version) is persisted in the modem EFS under /nv/item_files/cavli/ and read back via cav_efs.</li>
+</ul>
+<h3>3.2 Boot — RF Front End / Power <code>dcc4e79</code></h3>
+<p>PM_LDO_17 is enabled at the bootloader (BOOT.XF.4.1) stage to supply power to the RF antenna path.</p>
+<h3>3.3 RPM / ADSP baseline <code>dd6c512</code> <code>d335cd1</code></h3>
+<p>RPM and ADSP synchronized to the LA 5.0 firmware baseline (iot_high_mid_2024_spf_1_0, r1.0_00020.1). ADSP is a major bump ADSP.VT.5.4.1 → ADSP.VT.5.4.3.c1 (Divar).</p>
+<h3>3.4 TZ — QUP / QP Access Control</h3>
+<p>QUPv3 Serial Engine (SE) allocation and TrustZone (TZ) access-control mapping used on the CQS290 module (default profile, from QUPAC_Access.c).</p>
+<table>
+<thead>
+<tr>
+<th>SE</th>
+<th>Protocol</th>
+<th>Mode</th>
+<th>NS Owner</th>
+<th>AllowFifo</th>
+<th>Load</th>
+<th>ModExcl</th>
+<th>Function (Peripheral)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QUPV3_0_SE0</td>
+<td>UART_4W</td>
+<td>FIFO</td>
+<td>AC_HLOS</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td>Free — available for external peripheral (UART)</td>
+</tr>
+<tr>
+<td>QUPV3_0_SE1</td>
+<td>I2C</td>
+<td>FIFO</td>
+<td>AC_HLOS</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td>SMB / EEPROM / PM8008 (PMIC)</td>
+</tr>
+<tr>
+<td>QUPV3_0_SE2</td>
+<td>I2C</td>
+<td>GSI</td>
+<td>AC_HLOS</td>
+<td>FALSE</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td>Legacy Touch</td>
+</tr>
+<tr>
+<td>QUPV3_0_SE3</td>
+<td>UART_4W</td>
+<td>FIFO</td>
+<td>AC_HLOS</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td>BT HCI</td>
+</tr>
+<tr>
+<td>QUPV3_0_SE4</td>
+<td>UART_2W</td>
+<td>FIFO</td>
+<td>AC_HLOS</td>
+<td>FALSE</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td>Debug UART</td>
+</tr>
+<tr>
+<td>QUPV3_0_SE5</td>
+<td>SPI</td>
+<td>GSI</td>
+<td>AC_HLOS</td>
+<td>FALSE</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td>Free — available for external peripheral (SPI)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note:</strong> In the Qualcomm reference design SE0 is used for the NFC eSE (UART) and SE5 for a Fingerprint sensor (SPI). The Cavli CQS290 EVK does not populate NFC or a Fingerprint sensor, so these two Serial Engines are left free and are available for the customer to connect their own external peripherals (SE0 as UART, SE5 as SPI). The remaining SEs are assigned as shown above.</p>
+</blockquote>
+<h3>3.5 Chipcode Build System <code>71151f6</code></h3>
+<p>Dedicated LA 5.0 build scripts and configuration for ADSP, Boot, CDSP, Modem (MPSS), RPM, and TrustZone.</p>
+
+
+<hr>
+
+<h2>4. Test Results — Qualcomm LA 5.0 (Qualcomm reference board)</h2>
+
+<p>The results below are reproduced from Qualcomm's LA 5.0 release note (RNO-260220023709) and were obtained on Qualcomm's reference/QRD platform, not on Cavli hardware. They confirm the software baseline.</p>
+
+<h3>4.1 Functional / Peripheral Test Cases</h3>
+<table>
+<thead>
+<tr>
+<th>Test Case</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Build loading (PCAT / JTAG / Fastboot)</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>UART shell</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>FBC till Android UI (Display)</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>ADB (shell / push / remount)</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>ADB reboot (bootloader / edl) &amp; Fastboot reboot</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>ADSP / CDSP / MPSS / WPSS PIL</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>Camera front/rear (preview + snapshot)</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>Camcorder front/rear</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>Audio playback/record + AV playback/record</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>Graphics</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>Dump collection</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>BT connect &amp; pairing</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>WiFi connect &amp; browsing</td>
+<td>PASS</td>
+</tr>
+</tbody>
+</table>
+<h3>4.2 Modem Test Cases (dual-SIM)</h3>
+<table>
+<thead>
+<tr>
+<th>Combination</th>
+<th>MO SIM-1</th>
+<th>MO SIM-2</th>
+<th>MT SIM-1</th>
+<th>MT SIM-2</th>
+<th>Data SIM-1</th>
+<th>Data SIM-2</th>
+<th>SMS SIM-1</th>
+<th>SMS SIM-2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GSM + GSM</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>GSM + UMTS</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>GSM + LTE</td>
+<td>Pass</td>
+<td>NA</td>
+<td>Pass</td>
+<td>NA</td>
+<td>Pass</td>
+<td>–</td>
+<td>Pass</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>UMTS + UMTS</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>UMTS + LTE</td>
+<td>Pass</td>
+<td>NA</td>
+<td>Pass</td>
+<td>NA</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>UMTS + GSM</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>LTE + GSM</td>
+<td>NA</td>
+<td>Pass</td>
+<td>NA</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>NA</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>LTE + UMTS</td>
+<td>NA</td>
+<td>Pass</td>
+<td>NA</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>Pass</td>
+<td>NA</td>
+<td>Pass</td>
+</tr>
+</tbody>
+</table>
+
+<hr>
+
+<h2>5. Known Issues</h2>
+
+<ul>
+  <li>Kernel version mapping (4.19 → 5.15 GKI) is inferred from the Qualcomm program designations and is not explicitly printed in the Qualcomm release-note PDF.</li>
+  <li>SSC QUP per-engine sensor assignment is not named in the source table (bus/ownership only — see 3.4).</li>
+</ul>
+
+<hr>
+
+<h2>Appendix A — Build ID Comparison (QCM2290 META Build)</h2>
+
+<p><strong>LA 4.0 Meta Build:</strong> <code>QCM2290.LA.4.0-00041-STD.PROD-1</code> (Milestone Post-CS7) <strong>LA 5.0 Meta Build:</strong> <code>QCM2290.LA.5.0-00053-STD.PROD-1</code> (Milestone Post-CS8)</p>
+
+<table>
+<thead>
+<tr>
+<th>Software Image</th>
+<th>LA 4.0 Build ID</th>
+<th>LA 5.0 Build ID</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>META</td>
+<td>QCM2290.LA.4.0-00041-STD.PROD-1</td>
+<td>QCM2290.LA.5.0-00053-STD.PROD-1</td>
+<td>Big upgrade 4.0 → 5.0</td>
+</tr>
+<tr>
+<td>Kernel</td>
+<td>LA.UM.9.15.2.r1-09900-KAMORTA.QSSI14.0-1 (kernel 4.19)</td>
+<td>KERNEL.PLATFORM.2.0.r12-06100-kernel.0-1 (kernel 5.15 GKI)</td>
+<td>New kernel platform</td>
+</tr>
+<tr>
+<td>HLOS System</td>
+<td>LA.QSSI.14.0.r1-15800-qssi.0-1</td>
+<td>LA.QSSI.14.0.r3-03300-qssi.0-1</td>
+<td>r1 → r3</td>
+</tr>
+<tr>
+<td>HLOS System (A11)</td>
+<td>LA.QSSI.11.0.r1-22500-qssi.0-1</td>
+<td>(removed)</td>
+<td>Android 11 dropped</td>
+</tr>
+<tr>
+<td>HLOS Vendor</td>
+<td>(part of LA.UM.9.15.2)</td>
+<td>LA.VENDOR.13.2.1.r2-14000-DIVAR.QSSI14.0-1</td>
+<td>New vendor line</td>
+</tr>
+<tr>
+<td>QISI</td>
+<td>–</td>
+<td>LA.QISI.13.0.r1-02300-qssi.0-1</td>
+<td>New in LA5.0</td>
+</tr>
+<tr>
+<td>ADSP</td>
+<td>ADSP.VT.5.4.1-00389.8-KAMORTA-1</td>
+<td>ADSP.VT.5.4.3.c1-00118-DIVAR-1</td>
+<td>Major bump</td>
+</tr>
+<tr>
+<td>BOOT</td>
+<td>BOOT.XF.4.1-00392-KAMORTALAZ-1</td>
+<td>BOOT.XF.4.1-00408-KAMORTALAZ-1</td>
+<td>00392 → 00408</td>
+</tr>
+<tr>
+<td>MPSS (Modem)</td>
+<td>MPSS.HA.1.1-00471-KD_ALL_PACK-1</td>
+<td>MPSS.HA.1.1-00549-KD_ALL_PACK-2</td>
+<td>00471 → 00549</td>
+</tr>
+<tr>
+<td>RPM</td>
+<td>RPM.BF.1.10-00224-KAMORTAAAAAANAZR-1</td>
+<td>RPM.BF.1.10-00225-KAMORTAAAAAANAZR-1</td>
+<td>00224 → 00225</td>
+</tr>
+<tr>
+<td>TZ.APPS</td>
+<td>TZ.APPS.2.0-00281-KAMORTAAAAAANAZT-2</td>
+<td>TZ.APPS.2.0-00340-KAMORTAAAAAANAZT-1</td>
+<td>00281 → 00340</td>
+</tr>
+<tr>
+<td>TZ.XF</td>
+<td>TZ.XF.5.1-01183-ADJKAMORTAAANAZT-2</td>
+<td>TZ.XF.5.1-01213-ADJKAMORTAAANAZT-2</td>
+<td>01183 → 01213</td>
+</tr>
+<tr>
+<td>BTFM.CMC.1.2.0</td>
+<td>BTFM.CMC.1.2.0-00218-QCACHROMZ-2</td>
+<td>BTFM.CMC.1.2.0-00222-QCACHROMZ-3</td>
+<td>00218 → 00222</td>
+</tr>
+<tr>
+<td>BTFM.CMC.1.3.0</td>
+<td>BTFM.CMC.1.3.0-00115-QCACHROMZ-1</td>
+<td>BTFM.CMC.1.3.0-00153-QCACHROMZ-1</td>
+<td>00115 → 00153</td>
+</tr>
+<tr>
+<td>VIDEO</td>
+<td>VIDEO.VE.6.0-00053-PROD-2</td>
+<td>VIDEO.VE.6.0-00053-PROD-2</td>
+<td>Unchanged</td>
+</tr>
+<tr>
+<td>WLAN</td>
+<td>WLAN.HL.3.3.7.c1-00515-QCAHLSWMTPLZ-1</td>
+<td>WLAN.HL.3.3.7.c1-00553-QCAHLSWMTPLZ-1</td>
+<td>00515 → 00553</td>
+</tr>
+<tr>
+<td>WLAN_ADDON</td>
+<td>WLAN_ADDON.HL.1.0-00078-CNSS_RMZ_WAPI-1</td>
+<td>WLAN_ADDON.HL.1.0-00078-CNSS_RMZ_WAPI-1</td>
+<td>Unchanged</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>HLOS tags (LA 5.0): Vendor AU: AU_LINUX_ANDROID_LA.VENDOR.13.2.1.R2.11.00.00.1017.140 · Kernel AU: AU_LINUX_KERNEL.PLATFORM.2.0.R12.00.00.00.019.061 · System AU: AU_LINUX_ANDROID_LA.QSSI.14.0.R3.14.00.00.1236.033 · QISI AU: AU_LINUX_ANDROID_LA.QISI.13.0.R1.11.00.00.1316.023 · LKG: Keystone UKQ1.251204.001, Android Upstream UPM1.231025.065.</blockquote>
+
+</body>
+</html>

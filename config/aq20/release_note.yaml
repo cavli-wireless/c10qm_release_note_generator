@@ -1,0 +1,131 @@
+# AQ20 diag build hotfix — generated from the real commit range
+#   origin/main (06f07bc630da) .. hotfix/failed_to_build_diag (ec1eabfacc15)
+#
+# Everything here that is a fact (commit IDs, SHAs, subjects, branch names,
+# commit count) came from the repo. Anything still marked REPLACE_ME is
+# something only you can supply — release version numbers, and verification
+# results. Those are deliberately NOT filled in with guesses.
+
+title: "Release Note AQ20 — Diag Build Hotfix"
+subtitle: "Build fix release (Cavli AQ20 / MDM9607, Linux 3.18)"
+
+meta:
+  - label: "Release type"
+    value: "Hotfix — build fix only, no functional change"
+  - label: "SDK version"
+    value: "REPLACE_ME (previous SDK checkpoint: v1.2.4)"
+  - label: "Modem version"
+    value: "1.1.3 — unchanged by this release"
+  - label: "Platform"
+    value: "Qualcomm MDM9607 (Cavli AQ20 module), Linux 3.18 / Yocto"
+  - label: "Repository"
+    value: "`cavli-wireless/AQ20`"
+  - label: "From"
+    value: "`origin/main` — `06f07bc630da`"
+  - label: "To"
+    value: "`hotfix/failed_to_build_diag` — `ec1eabfacc15` (16-Jul-2026)"
+  - label: "Scope"
+    value: "2 commits"
+
+overview:
+  intro: >-
+    This is a **build hotfix** for the AQ20 Linux 3.18 SDK. The `main` branch could
+    not complete a full image build because of two defects in the Yocto recipe layer
+    covering the **diag** configuration package. Both are corrected here. There are
+    no functional, runtime or firmware changes in this release — the modem, boot
+    and RPM images carry over unchanged from the previous build.
+  architecture_changes:
+    - "None. This release touches only Yocto recipe metadata; no source, kernel or firmware component changed."
+  domains:
+    - "**Part A — Linux SDK & Build:** the two recipe fixes that restore the image build. See Section 2."
+    - "**Part B — Chipcode (Firmware):** no changes in this release. See Section 3."
+  appendix_note: "The exact commit range for this release is in **Appendix A**."
+
+part_a:
+  heading: "2. Part A — Linux SDK & Build"
+  intro: >-
+    Both changes are in the Yocto/poky recipe layer. Together they fix the build
+    failure that gives the branch its name (`hotfix/failed_to_build_diag`).
+  change_table:
+    label: "Change set (Cavli commits):"
+    headers: ["Commit", "Area", "Change"]
+    rows:
+      - ["`a45e155`", "Yocto / poky", "Syntax error in SRC_URI for diag_cfg file"]
+      - ["`ec1eabf`", "Yocto / poky", "Incorrect path to /sdcard conflict with symlink file to /mnt/sdcard"]
+  subsections:
+    - heading: "2.1 diag_cfg recipe — SRC_URI syntax error"
+      commit_refs: ["a45e155"]
+      body:
+        - "The `SRC_URI` entry for the **diag_cfg** file was malformed, so the recipe failed to parse and the diag configuration package could not be fetched or built. This aborted the full image build."
+        - "The `SRC_URI` declaration is corrected, allowing the diag_cfg package to build again."
+    - heading: "2.2 /sdcard path conflict with the /mnt/sdcard symlink"
+      commit_refs: ["ec1eabf"]
+      body:
+        - "A path referencing `/sdcard` conflicted with the `/mnt/sdcard` symlink on the AQ20 rootfs, breaking the build. The path is corrected so the two no longer collide."
+
+part_b:
+  heading: "3. Part B — Chipcode (Firmware): Modem, Boot, RPM, TrustZone, BTFM, CNSS"
+  intro: >-
+    **No changes.** No commit in this release touches any chipcode tree. Each image
+    below is listed with the commit that last modified it, so the table doubles as a
+    firmware snapshot. The modem sits at **1.1.3** (`bf1c9311`, 28-May-2026); BOOT,
+    BTFM and CNSS have not been modified since the initial
+    `LE.UM.2.3.6-55700-9x07` import in April 2024.
+  change_table:
+    label: "Chipcode change set (Cavli commits):"
+    headers: ["Commit", "Image", "Change"]
+    # Real per-image last-touching commits, read from the repo on 2026-08-21
+    # (fetch_local.py --list-subsystems). These are NOT the repo HEAD: each is
+    # the most recent commit that actually modified that directory.
+    rows:
+      - ["`bf1c9311`", "MPSS (modem_proc)", "No change in this release — last touched 2026-05-28 (Update modem version to 1.1.3)"]
+      - ["`c6e3a82e`", "TrustZone (trustzone_images)", "No change in this release — last touched 2024-12-03"]
+      - ["`c6e3a82e`", "RPM (rpm_proc)", "No change in this release — last touched 2024-12-03"]
+      - ["`6d29dedb`", "BOOT (boot_images)", "No change in this release — last touched 2024-04-10 (initial LE.UM.2.3.6-55700-9x07 import)"]
+      - ["`6d29dedb`", "BTFM (btfm_proc)", "No change in this release — last touched 2024-04-10 (initial LE.UM.2.3.6-55700-9x07 import)"]
+      - ["`6d29dedb`", "CNSS / WLAN (cnss_proc)", "No change in this release — last touched 2024-04-10 (initial LE.UM.2.3.6-55700-9x07 import)"]
+      - ["`8c760d9b`", "Common (sectools / signing)", "No change in this release — last touched 2025-08-26"]
+  subsections: []
+
+test_results:
+  heading: "4. Test Result"
+  intro: >-
+    No test campaign was run for this hotfix, and none is claimed here. Because the
+    change is confined to recipe metadata, verification is a build check plus a
+    sanity check of the affected path on target. Fill in the results below before
+    issuing this note.
+  tables:
+    - heading: "4.1 Test / verification checklist"
+      headers: ["Check", "Result"]
+      rows:
+        - ["Full image build completes (previously failing)", "REPLACE_ME"]
+        - ["diag_cfg package builds and is installed into the image", "REPLACE_ME"]
+        - ["diag logging functional on target", "REPLACE_ME"]
+        - ["/sdcard resolves to /mnt/sdcard on target, no broken symlink", "REPLACE_ME"]
+        - ["Modem / boot / RPM images unchanged vs previous build", "REPLACE_ME"]
+
+known_issues:
+  heading: "5. Known Issues"
+  points:
+    - "This release is scoped to the build failure only. Any functional defects open against the previous build remain open."
+    - "The Section 2 descriptions are derived from the commit messages and the directories touched, not from a line-by-line review of the recipe diffs. Confirm the wording against the diffs before publishing externally."
+    - "Release version numbering is not yet assigned (see **SDK version** in the header)."
+    - "Several Part B images share a commit ID because one commit touched them together: `6d29dedb` is the initial BSP import (BOOT, BTFM, CNSS), and `c6e3a82e` (\"all pyc files removed\") touched RPM and TrustZone in the same commit. This is genuine shared history, not a placeholder."
+    - "BOOT, BTFM and CNSS have not been modified since April 2024. If a newer Qualcomm baseline for those images is expected in this product, that is worth checking separately — this note only reports what is in the repo."
+
+appendix:
+  heading: "Appendix A — Commit Range"
+  intro: >-
+    This release is defined by the git range below rather than by build IDs, since
+    no firmware image was rebuilt.
+  table:
+    headers: ["Item", "Value"]
+    rows:
+      - ["Repository", "`cavli-wireless/AQ20`"]
+      - ["From (baseline)", "`origin/main` @ `06f07bc630da`"]
+      - ["To (this release)", "`hotfix/failed_to_build_diag` @ `ec1eabfacc15`"]
+      - ["Commits in range", "2"]
+      - ["Subsystems touched", "apps_proc (Yocto recipe layer) only"]
+      - ["Firmware images rebuilt", "None"]
+  footer_notes:
+    - "Commit range reproducible with: `git log --oneline 06f07bc630da..ec1eabfacc15`"

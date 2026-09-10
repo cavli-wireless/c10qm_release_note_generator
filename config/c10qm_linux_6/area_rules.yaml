@@ -1,0 +1,75 @@
+# area_rules.yaml — AQ20 (cavli-wireless/AQ20, MDM9607 Linux Embedded BSP).
+#
+# Unlike the CQS290 reference (several repos), AQ20 is ONE repo holding the
+# whole BSP, so Part A / Part B is a split across top-level directories:
+#
+#   Part A — Linux SDK / apps side : apps_proc/**  (Yocto/poky, kernel, OTA,
+#                                    cavli services, vendor apps), build/**
+#   Part B — Chipcode / firmware   : modem_proc/**, boot_images/**, rpm_proc/**,
+#                                    common/sectools/**
+#
+# Rules are tried in order; the first regex matching any file in a commit wins.
+# Anything unmatched falls back to the path-prefix heuristic in
+# build_change_table.py.
+#
+# Directory names below come from the actual tree (see suggest_baseline.py's
+# "Most active directories" output). Adjust the labels to whatever wording your
+# release notes normally use.
+
+# ---- Part B: modem firmware -------------------------------------------
+- pattern: '^modem_proc/rftarget'
+  area: "MPSS — RF target"
+- pattern: '^modem_proc/(lte|datamodem|dataims|data)'
+  area: "MPSS — data / LTE"
+- pattern: '^modem_proc/core'
+  area: "MPSS — core"
+- pattern: 'atcop|atcm|/at_'
+  area: "MPSS — AT command interface"
+- pattern: '^modem_proc/'
+  area: "MPSS (modem)"
+
+# ---- Part B: boot / rpm / security ------------------------------------
+- pattern: '^boot_images/'
+  area: "BOOT"
+- pattern: '^rpm_proc/'
+  area: "RPM"
+- pattern: '^common/sectools'
+  area: "Sectools / signing"
+- pattern: '^common/'
+  area: "Common"
+
+# ---- Part A: Linux userspace / Yocto ----------------------------------
+# Order matters: the Cavli-specific rules must come BEFORE the generic
+# '^apps_proc/poky' rule, or a meta-cavli recipe gets filed as plain poky.
+#
+# apps_proc/cavli is Cavli's own userspace tree and carries the vendor AT
+# command interface — it gets its own label rather than being lumped in with
+# the rest of apps_proc.
+- pattern: '^apps_proc/cavli'
+  area: "AT command"
+- pattern: 'cavli_linux_services|cav_[a-z]+_service|cavli_api|libcavlisdk|cavli_utils'
+  area: "Cavli Linux services"
+- pattern: 'meta-cavli'
+  area: "Yocto — meta-cavli layer"
+- pattern: '^apps_proc/kernel'
+  area: "Linux kernel"
+- pattern: '^apps_proc/poky'
+  area: "yocto"
+- pattern: '^apps_proc/OTA|/ota'
+  area: "OTA update"
+- pattern: '^apps_proc/bootable'
+  area: "Bootable / images"
+- pattern: '^apps_proc/external'
+  area: "apps_proc / external"
+- pattern: '^apps_proc/vendor'
+  area: "apps_proc / vendor"
+- pattern: '^apps_proc/'
+  area: "apps_proc"
+
+# ---- build / tooling ---------------------------------------------------
+- pattern: '^build/aq20|^build/'
+  area: "Build system"
+- pattern: 'sbom|spdx'
+  area: "SBOM tooling"
+- pattern: '\.(md|txt)$|^README'
+  area: "Documentation"
