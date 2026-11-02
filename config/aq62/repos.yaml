@@ -1,0 +1,100 @@
+# AQ62 release note — repo list.
+#
+# AQ62 is the Cavli module on Qualcomm SA522M (SDX "pinnacles", LE 3.1,
+# Linux 5.15). The workspace is a `repo` checkout of four git repos, defined by
+# cavli-wireless/aq62_manifest (chipcode-aq62-release.xml):
+#
+#   aq62_chipcode          chipcode/                          Part B (firmware images)
+#   aq62_apps_proc         chipcode/SA525M_apps/apps_proc     Part A (Linux / Yocto)
+#   aq62_modem             chipcode/SA525M_modem/modem_proc   Part B (MPSS)
+#   cqm22x-build-scripts   chipcode/build                     Part A (build / SDK)
+#
+# Range: ES2 release -> ES3 bring-up.
+#
+#   from_ref = the exact SHAs pinned by the manifest branch
+#              release/aq62_es2_bringup_release (b510570, 2026-09-25).
+#   to_ref   = the live ES3 branch of each repo.
+#
+# aq62_chipcode has no ES3 branch, and its github/main does NOT contain the ES2
+# pin, so it is held at the ES2 pin (to_ref = from_ref): no firmware-image
+# changes this release. Point to_ref at the ES3 chipcode ref once one exists.
+#
+# When the ES3 release manifest is cut, replace each to_ref with the SHA it
+# pins so the note matches exactly what shipped. Before running:
+#   repo forall -c 'git fetch --all'
+
+product: AQ62
+release_version: "ES3"
+
+repos:
+  - name: AQ62 apps_proc
+    repo: cavli-wireless/aq62_apps_proc
+    local_path: /home/elliot/SSD_WS_2TB/AQ62/chipcode/SA525M_apps/apps_proc
+    from_ref: e09b076789e9a32c45264ff1b65e71c674d874ab
+    to_ref: github/aq62_es3_bringup
+    part: A
+    # Attribution is longest-path-wins: a file under src/cavli lands on that
+    # entry, and only anything else under src falls to "apps_proc — other".
+    subsystems:
+      - {name: "Cavli userspace (src/cavli)",       path: "src/cavli",                                                part: A}
+      - {name: "Yocto — meta-cavli layer",          path: "poky/meta-cavli",                                          part: A}
+      - {name: "Yocto — qti-conf",                  path: "poky/qti-conf",                                            part: A}
+      - {name: "Yocto / poky",                      path: "poky",                                                     part: A}
+      - {name: "Linux kernel 5.15 — device tree",   path: "src/kernel-5.15/kernel_platform/qcom/proprietary/devicetree", part: A}
+      - {name: "Linux kernel 5.15",                 path: "src/kernel-5.15",                                          part: A}
+      - {name: "System core / init scripts",        path: "src/system",                                               part: A}
+      - {name: "OTA",                               path: "src/OTA",                                                  part: A}
+      - {name: "apps_proc — other",                 path: "src",                                                      part: A}
+      - {name: "Prebuilts",                         path: "prebuilt_HY11",                                            part: A}
+      - {name: "CI / automation (apps_proc)",       path: ".github",                                                  part: A}
+      - {name: "apps_proc — docs",                  path: ".",                                                        part: A}
+
+  - name: AQ62 build scripts
+    repo: cavli-wireless/cqm22x-build-scripts
+    local_path: /home/elliot/SSD_WS_2TB/AQ62/chipcode/build
+    from_ref: 8b7ba0f1ce188d3dcee228e96ee15333f6961b9a
+    to_ref: github/sa525m-le
+    part: A
+    subsystems:
+      - {name: "SDK packaging scripts",             path: "sdk_script",                                               part: A}
+      - {name: "SDK recipes",                       path: "sdk_recipes",                                              part: A}
+      - {name: "SDK manifests",                     path: "manifest",                                                 part: A}
+      - {name: "CI / automation (build)",           path: ".github",                                                  part: A}
+      - {name: "Build scripts",                     path: ".",                                                        part: A}
+
+  - name: AQ62 modem
+    repo: cavli-wireless/aq62_modem
+    local_path: /home/elliot/SSD_WS_2TB/AQ62/chipcode/SA525M_modem/modem_proc
+    from_ref: 71e11c2c184723ee79f29a9c63b7a9280f9b0192
+    to_ref: github/aq62_es3_bringup
+    part: B
+    subsystems:
+      - {name: "MPSS — Cavli AT commands",          path: "datamodem/interface/atcop/cavli",                          part: B}
+      - {name: "MPSS — AT command interface",       path: "datamodem/interface/atcop",                                part: B}
+      - {name: "MPSS — RF / FTM",                   path: "rf",                                                       part: B}
+      - {name: "MPSS — build config",               path: "build",                                                    part: B}
+      - {name: "MPSS (modem_proc)",                 path: ".",                                                        part: B}
+
+  - name: AQ62 chipcode
+    repo: cavli-wireless/aq62_chipcode
+    local_path: /home/elliot/SSD_WS_2TB/AQ62/chipcode
+    from_ref: 5451964f4e811d2b48e5775dbd57fc8c50074ae4
+    to_ref: 5451964f4e811d2b48e5775dbd57fc8c50074ae4
+    part: B
+    # SA525M_apps, SA525M_modem and build are separate repos (gitignored here)
+    # and have their own entries above, so they are not listed again.
+    subsystems:
+      - {name: "BOOT (SA525M_boot)",                path: "SA525M_boot",                                              part: B}
+      - {name: "TrustZone (SA525M_tz)",             path: "SA525M_tz",                                                part: B}
+      - {name: "TZ apps (SA525M_tz_apps)",          path: "SA525M_tz_apps",                                           part: B}
+      - {name: "AOP (SA525M_aop)",                  path: "SA525M_aop",                                               part: B}
+      - {name: "CPUCP (SA525M_cpucp)",              path: "SA525M_cpucp",                                             part: B}
+      - {name: "Kernel device tree (SA525M_apps_kernel)", path: "SA525M_apps_kernel",                                 part: B}
+      - {name: "BTFM HSP (SA525M_btfm_hsp)",        path: "SA525M_btfm_hsp",                                          part: B}
+      - {name: "BTFM ROME (SA525M_btfm_rome)",      path: "SA525M_btfm_rome",                                         part: B}
+      - {name: "WLAN HSP (SA525M_wlan_hsp)",        path: "SA525M_wlan_hsp",                                          part: B}
+      - {name: "WLAN ROME (SA525M_wlan_rome)",      path: "SA525M_wlan_rome",                                         part: B}
+      - {name: "Common — config (NAND / storage / prod)", path: "common/config",                                     part: B}
+      - {name: "Common — sectools / signing",       path: "common/sectoolsv2",                                        part: B}
+      - {name: "Common",                            path: "common",                                                   part: B}
+      - {name: "Chipcode — contents.xml / meta",    path: ".",                                                        part: B}

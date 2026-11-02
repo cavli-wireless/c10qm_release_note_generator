@@ -1,0 +1,101 @@
+# area_rules.yaml — AQ62 (Qualcomm SA522M, LE 3.1, Linux 5.15).
+#
+# AQ62 spans four repos (see repos.yaml). These rules are shared by all of
+# them and match REPO-RELATIVE paths, so each rule is anchored on a directory
+# that exists in only one repo:
+#
+#   aq62_apps_proc         src/**, poky/**, prebuilt_HY11/**
+#   aq62_modem             datamodem/**, rf/**, build/** (modem build config)
+#   cqm22x-build-scripts   sdk_script/**, sdk_recipes/**, manifest/**, *.sh/*.py
+#   aq62_chipcode          SA525M_*/**, common/**, contents.xml
+#
+# Rules are tried in order; the first regex matching any file in a commit wins.
+# Anything unmatched falls back to the path-prefix heuristic in
+# build_change_table.py.
+
+# ---- CI (apps_proc, modem, build, chipcode all carry MegaMerge workflows) --
+- pattern: '^\.github/'
+  area: "CI / automation"
+
+# ---- Part B: modem firmware (aq62_modem) ---------------------------------
+- pattern: '^datamodem/interface/atcop/cavli/'
+  area: "MPSS — Cavli AT commands"
+- pattern: '^datamodem/interface/atcop/'
+  area: "MPSS — AT command interface"
+- pattern: '^rf/application/ftm|^rf/.*/ftm'
+  area: "MPSS — RF / FTM"
+- pattern: '^rf/'
+  area: "MPSS — RF"
+- pattern: '^(datamodem|dataims|dataipa|lte|nr5g|enl[12]_?)'
+  area: "MPSS — data / LTE / NR5G"
+- pattern: '^build/inc/'
+  area: "MPSS — build config"
+- pattern: '^(core|mcfg|mmcp|uim|gps|fw_[a-z0-9_]+)/'
+  area: "MPSS"
+
+# ---- Part B: firmware images (aq62_chipcode) -----------------------------
+- pattern: '^SA525M_boot/'
+  area: "BOOT"
+- pattern: '^SA525M_tz_apps/'
+  area: "TZ apps"
+- pattern: '^SA525M_tz/'
+  area: "TrustZone"
+- pattern: '^SA525M_aop/'
+  area: "AOP"
+- pattern: '^SA525M_cpucp/'
+  area: "CPUCP"
+- pattern: '^SA525M_apps_kernel/'
+  area: "Kernel device tree (chipcode)"
+- pattern: '^SA525M_btfm_'
+  area: "BTFM"
+- pattern: '^SA525M_wlan_'
+  area: "WLAN"
+- pattern: '^common/config/nand|^common/config/storage'
+  area: "NAND / storage config"
+- pattern: '^common/sectools'
+  area: "Sectools / signing"
+- pattern: '^common/'
+  area: "Common"
+- pattern: '^contents\.xml$|^about\.html$'
+  area: "Chipcode meta"
+
+# ---- Part A: Linux userspace / Yocto (aq62_apps_proc) --------------------
+# Cavli-specific rules come BEFORE the generic poky / kernel rules, or a
+# meta-cavli recipe gets filed as plain poky.
+- pattern: '^src/cavli/at-bridge|recipes-cavli/at-bridge'
+  area: "AT bridge"
+- pattern: '^src/cavli/'
+  area: "Cavli userspace"
+- pattern: '^poky/meta-cavli/'
+  area: "Yocto — meta-cavli layer"
+- pattern: '^poky/qti-conf/'
+  area: "Yocto — build environment"
+- pattern: '^poky/'
+  area: "Yocto"
+- pattern: '/devicetree/'
+  area: "Device tree"
+- pattern: 'drivers/net/(ethernet|phy|pcs)/'
+  area: "Ethernet (stmmac / AQR113C PHY)"
+- pattern: '/arch/arm64/configs/'
+  area: "Kernel config"
+- pattern: '^src/kernel-5\.15/'
+  area: "Linux kernel"
+- pattern: '^src/system/core/rootdir/'
+  area: "Init / power management"
+- pattern: '^src/OTA/'
+  area: "OTA update"
+- pattern: '^src/'
+  area: "apps_proc"
+
+# ---- Part A: build / SDK tooling (cqm22x-build-scripts) ------------------
+- pattern: '^sdk_recipes/'
+  area: "SDK recipes"
+- pattern: '^sdk_script/|^make_sdk|^apply_sdk_manifest|^release_sdk'
+  area: "SDK packaging"
+- pattern: '^manifest/'
+  area: "SDK manifest"
+- pattern: '^build[._a-z]*\.sh$|^[a-z_]+\.(sh|py)$'
+  area: "Build scripts"
+
+- pattern: '\.(md|txt)$|^README'
+  area: "Documentation"

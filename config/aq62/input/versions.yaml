@@ -1,0 +1,50 @@
+# versions.yaml — the only YAML you edit. Everything else in this folder is
+# Markdown. These values appear in the document header.
+#
+# Pre-filled where the repo already told us the answer; REPLACE_ME where only
+# you know. Anything left as REPLACE_ME is counted at the end of every run, so
+# an unfinished note cannot ship unnoticed.
+#
+# Any scalar field here can be referenced from another as {field_name}, so a
+# version number is written once and reused. `title` and `subtitle` below use
+# {sdk_version} and {modem_version}. An unknown name is left as-is rather than
+# blanked, so a typo shows up in the document instead of vanishing.
+
+title: "Release Note AQ62 SDK {sdk_version}"
+subtitle: "Cavli AQ62 / Qualcomm SA522M, Linux 5.15"
+
+sdk_version: "0.0.3"
+
+# Verified from the repo: CAVLI_FW_VER_I in
+# datamodem/interface/atcop/cavli/inc/cav_common.h on aq62_es3_bringup.
+modem_version: "0.0.3"
+
+platform: "Qualcomm SA522M (Cavli AQ62 module), Linux 5.15 / Yocto (LE 1.0)"
+
+# Extra header rows. Repositories / From / To / Scope are added automatically
+# from the repos — do not list them here.
+extra_meta:
+  - {label: "Release type", value: "Engineering Sample (ES3)"}
+
+# Section 1 opening paragraph. Say what the release is FOR — the tables already
+# say what is in it.
+overview: >-
+  This ES3 release brings up the Cavli AT command interface on the AQ62 modem
+  (ATI / GMI / GMM / GMR / GSN, FTM RF test commands), enables USXGMII in-band
+  auto-negotiation for the AQR113C Ethernet PHY, adds UART clock control for
+  sleep, and packages the AT bridge into the SDK.
+
+domains:
+  - "**Part A — Linux SDK & Services:** AT bridge, Yocto layers, Linux 5.15 kernel and device tree, build and SDK packaging. See Section 2."
+  - "**Part B — Chipcode (Firmware):** MPSS (modem), BOOT, TrustZone, AOP, CPUCP, BTFM, WLAN. See Section 3."
+
+part_a_heading: "2. Part A — Linux SDK & Services"
+part_a_intro: >-
+  Userspace, kernel, SDK and build changes for the AQ62 Linux 5.15 line, from
+  the aq62_apps_proc.
+part_a_change_label: "Linux SDK / services change set (Cavli commits):"
+
+part_b_heading: "3. Part B — Chipcode (Firmware): Modem, Boot, TrustZone, AOP, CPUCP, BTFM, WLAN"
+part_b_intro: >-
+  Firmware images, from the aq62_modem and aq62_chipcode repositories.
+part_b_change_label: "Chipcode change set (Cavli commits):"
